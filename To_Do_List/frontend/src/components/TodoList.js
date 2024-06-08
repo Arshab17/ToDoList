@@ -1,32 +1,31 @@
-import React,{useState} from 'react'
+import React,{useEffect, useState} from 'react'
+// import TodoItem from './TodoItem' ;
+// import AddTodo from './AddTodo';
+import axios from 'axios';
+
 const TodoList = () => {
-    const [tasks, setTasks] = useState([]);
-    const [newTask, setNewTask] = useState("")
+  const [todos, setTodos] = useState([]);
 
-    function handleInputChange(event){
-        setNewTask(event.target.value);
-    }
-
-    function addTask(){
-
-    }
-
-
-    function deleteTask(index){
-
-    }
+  useEffect(() => {
+      axios.get('http://localhost:8000/get_or_create/')
+          .then(response => {
+              setTodos(response.data);
+          })
+          .catch(error => {
+              console.error('There was an error fetching the todos!', error);
+          });
+  }, []);
 
   return (
-    <div className="to-do-list">
-        <h1> To-Do-List</h1>
+      <div>
+          <h1>Todo List</h1>
+          <ul>
+              {todos.map(todo => (
+                  <li key={todo.id}>{todo.title}</li>
+              ))}
+          </ul>
+      </div>
+  );
+};
 
-        <div>
-            <input type='text' placeholder='enter a task' value={newTask} onChange={handleInputChange} />
-            <button className='add-button' onClick={addTask}>add</button>
-        </div>
-
-    </div>
-  )
-}
-
-export default TodoList
+export default TodoList;
